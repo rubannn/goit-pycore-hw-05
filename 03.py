@@ -21,6 +21,9 @@ log_pattern = re.compile(r"(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) (\w+) (.+)")
 
 
 def parse_log_line(line: str) -> dict:
+    """Розбирає один рядок логів у словник з полями:
+    дата, час, рівень логування, повідомлення."""
+    
     parse_log = dict()
     match = log_pattern.match(line)
     if match:
@@ -30,6 +33,8 @@ def parse_log_line(line: str) -> dict:
 
 
 def load_logs(file_path: str) -> list:
+    """Завантажує логи з файлу та повертає список розібраних рядків."""
+
     logs = []
     with open(file_path, mode="r", encoding="utf-8") as file:
         for line in file.readlines():
@@ -40,10 +45,13 @@ def load_logs(file_path: str) -> list:
 
 
 def filter_logs_by_level(logs: list, level: str) -> list:
+    """Фільтрує логи за рівнем логування."""
     return [item for item in logs if item["code"] == level]
 
 
 def count_logs_by_level(logs: list) -> dict:
+    """Рахує кількість логів для кожного рівня логування."""
+
     logs_by_level = defaultdict(int)
     for item in logs:
         logs_by_level[item["code"]] += 1
@@ -51,6 +59,8 @@ def count_logs_by_level(logs: list) -> dict:
 
 
 def display_log_counts(counts: dict, level=""):
+    """Виводить у консоль таблицю з підрахунком логів за рівнем."""
+
     title = ["Рівень логування", "Кількість"]
     a, b = [len(x) for x in title]
     separator = " | "
@@ -67,6 +77,8 @@ def display_log_counts(counts: dict, level=""):
 
 
 def display_log_details(logs: list, level: str):
+    """Виводить детальні дані про логи певного рівня."""
+
     lvl = COLOR + f"{level}"
     print(f"\nДеталі логів для рівня {lvl}", ":", sep="")
     for log in filter_logs_by_level(logs, level):
@@ -93,6 +105,7 @@ if __name__ == "__main__":
         except FileNotFoundError:
             print(f"File '{log_path}' not found...")
 
+# ---TESTS---
 # python 03.py ./in/03.logs
 # python 03.py ./in/03.logs error
 # python 03.py ./in/03.logs info
